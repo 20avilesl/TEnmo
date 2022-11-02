@@ -33,4 +33,12 @@ public class Account {
     public void setAccountId(int accountId) {
         this.accountId = accountId;
     }
+
+    public int getAccountId() {
+        return accountId;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
 }

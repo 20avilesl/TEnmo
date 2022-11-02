@@ -4,25 +4,48 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class Transfer {
-    private User sender;
-    private User receiver;
+    private int sender;
+    private int receiver;
     private BigDecimal amount;
     private Date date;
     private String status;
+    private int id;
 
-    public Transfer(User sender, User receiver, BigDecimal amount) {
+    public Transfer(){};
+    public Transfer(int sender, int receiver, BigDecimal amount, String status, int id) {
         this.sender = sender;
         this.receiver = receiver;
         this.amount = amount;
         this.date = null;
-        this.status = "pending";
+        this.status = status;
+        this.id = id;
     }
 
-    public User getSender() {
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public void setReceiver(int receiver) {
+        this.receiver = receiver;
+    }
+
+    public void setSender(int sender) {
+        this.sender = sender;
+    }
+
+    public int getSender() {
         return sender;
     }
 
-    public User getReceiver() {
+    public int getReceiver() {
         return receiver;
     }
 
