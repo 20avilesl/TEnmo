@@ -16,6 +16,7 @@ import java.util.List;
 public class JdbcUserDao implements UserDao {
 
     private JdbcTemplate jdbcTemplate;
+    private final BigDecimal STARTING_AMOUNT = new BigDecimal("1000.00");
 
     public JdbcUserDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -69,8 +70,18 @@ public class JdbcUserDao implements UserDao {
 
         // TODO: Create the account record with initial balance
 
+        sql = "INSERT INTO account (user_id, balance) "
+                + "VALUES (?, ?)";
+        try {
+            jdbcTemplate.update(sql, newUserId, STARTING_AMOUNT);
+        } catch (DataAccessException exception) {
+            return false;
+        }
+
         return true;
     }
+
+
 
     private User mapRowToUser(SqlRowSet rs) {
         User user = new User();
