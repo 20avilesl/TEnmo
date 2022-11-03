@@ -1,13 +1,13 @@
 package com.techelevator.tenmo.model;
 
 import java.math.BigDecimal;
-import java.util.Date;
+
 
 public class Transfer {
     private int sender;
     private int receiver;
     private BigDecimal amount;
-    private Date date;
+
     private String status;
     private int id;
 
@@ -16,7 +16,6 @@ public class Transfer {
         this.sender = sender;
         this.receiver = receiver;
         this.amount = amount;
-        this.date = null;
         this.status = status;
         this.id = id;
     }
@@ -53,16 +52,8 @@ public class Transfer {
         return amount;
     }
 
-    public Date getDate() {
-        return date;
-    }
-
     public String getStatus() {
         return status;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
     }
 
     public void setStatus(String status) {

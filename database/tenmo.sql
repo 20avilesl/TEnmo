@@ -35,7 +35,6 @@ CREATE TABLE transfer (
 	sender int NOT NULL,
 	receiver int NOT NULL,
 	amount decimal(13, 2) NOT NULL,
-	date_sent date,
 	transfer_status varchar(32) ,
 	CONSTRAINT PK_transfer PRIMARY KEY (transfer_id),
 	CONSTRAINT FK_transfer_sender FOREIGN KEY (sender) REFERENCES tenmo_user (user_id),
@@ -45,9 +44,9 @@ CREATE TABLE transfer (
 INSERT INTO tenmo_user(username, password_hash) VALUES ('Daniel', 'password');
 INSERT INTO tenmo_user(username, password_hash) VALUES ('Josh', 'password');
 
-INSERT INTO transfer (sender, receiver, amount, date_sent, transfer_status) VALUES(1001, 1002, 10.00,'2022-01-01', 'pending');
-INSERT INTO transfer (sender, receiver, amount, date_sent, transfer_status) VALUES(1001, 1002, 10.00,'2022-01-01', 'approved');
-INSERT INTO transfer (sender, receiver, amount, date_sent, transfer_status) VALUES(1001, 1002, 10.00,'2022-01-01', 'fulfilled');
+INSERT INTO transfer (sender, receiver, amount, transfer_status) VALUES(1001, 1002, 10.00, 'pending');
+INSERT INTO transfer (sender, receiver, amount, transfer_status) VALUES(1001, 1002, 10.00, 'approved');
+INSERT INTO transfer (sender, receiver, amount, transfer_status) VALUES(1001, 1002, 10.00, 'fulfilled');
 
 COMMIT;
 

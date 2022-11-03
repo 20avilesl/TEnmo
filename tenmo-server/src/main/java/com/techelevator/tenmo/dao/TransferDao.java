@@ -8,8 +8,9 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface TransferDao {
-    boolean createTransfer(Account sender, Account receiver, String amount);
-    void updateTransferStatus(Transfer transfer, String status);
-    Transfer getTransferById(int id);
-    List<User> findAllTransfers();
+
+    boolean createTransfer(Transfer transfer);
+    boolean updateTransferStatus(int id, String status);
+    Transfer getTransferById(int id, User user);
+    List<Transfer> findAllTransfers(String username);
 }

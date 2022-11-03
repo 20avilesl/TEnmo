@@ -29,10 +29,10 @@ public class UserController {
     public User findUser(@ApiParam("find user by username") @RequestParam String username) {
         return userDao.findByUsername(username);
     }
-    @ApiOperation("find Id by username")
-    @RequestMapping(value = "accounts/{username}", method = RequestMethod.GET)
-    public int findId(@ApiParam("find Id of user") @RequestParam String username) {
-        return userDao.findIdByUsername(username);
-    }
+//    @ApiOperation("find Id by username")
+//    @RequestMapping(value = "accounts/{username}", method = RequestMethod.GET)
+//    public int findId(@ApiParam("find Id of user") @RequestParam String username) {
+//        return userDao.findIdByUsername(username);
+//    }
 
 }
