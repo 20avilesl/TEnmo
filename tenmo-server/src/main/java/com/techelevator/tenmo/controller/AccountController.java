@@ -17,9 +17,15 @@ public class AccountController {
     public AccountController (AccountDao accountDao) {
         this.accountDao = accountDao;
     }
-}
+    @ApiParam("Get Balance")
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public int getBalance(@ApiParam("enter the username") @RequestParam String username) {
+        return accountDao.getBalance(username);
+    }
 //    @ApiOperation("getAccount")
 //    @RequestMapping(value = "{id}", method = RequestMethod.GET)
 //    public Account listUsers(@ApiParam("Enter the id") @RequestParam Long id) {
 //        return accountDao.getAccount(id);
 //    }
+
+}

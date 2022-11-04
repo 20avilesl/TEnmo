@@ -13,6 +13,7 @@ public interface TransferDao {
     Transfer getTransferById(int id, String username);
     List<Transfer> findAllTransfers(String username);
     boolean updateTransferStatus(int id, String status, String sender);
+    List<Transfer> findAllPendingTransfers (String username);
 
 }
 // you pay (sender of money) someone money

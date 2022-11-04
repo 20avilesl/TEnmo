@@ -41,14 +41,14 @@ CREATE TABLE transfer (
 	CONSTRAINT FK_transfer_receiver FOREIGN KEY (receiver) REFERENCES tenmo_user (user_id)
 );
 
-INSERT INTO tenmo_user(username, password_hash) VALUES ('Daniel', 'password');
-INSERT INTO tenmo_user(username, password_hash) VALUES ('Josh', 'password');
-
-
-
-INSERT INTO transfer (sender, receiver, amount, transfer_status) VALUES(1001, 1002, 10.00, 'pending');
-INSERT INTO transfer (sender, receiver, amount, transfer_status) VALUES(1002, 1001, 10.00, 'approved');
-INSERT INTO transfer (sender, receiver, amount, transfer_status) VALUES(1001, 1002, 10.00, 'fulfilled');
+--INSERT INTO tenmo_user(username, password_hash) VALUES ('Daniel', 'password');
+--INSERT INTO tenmo_user(username, password_hash) VALUES ('Josh', 'password');
+--
+--
+--
+--INSERT INTO transfer (sender, receiver, amount, transfer_status) VALUES(1001, 1002, 10.00, 'pending');
+--INSERT INTO transfer (sender, receiver, amount, transfer_status) VALUES(1002, 1001, 10.00, 'approved');
+--INSERT INTO transfer (sender, receiver, amount, transfer_status) VALUES(1001, 1002, 10.00, 'fulfilled');
 
 COMMIT;
 

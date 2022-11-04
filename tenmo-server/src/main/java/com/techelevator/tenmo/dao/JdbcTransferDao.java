@@ -83,9 +83,11 @@ public class JdbcTransferDao implements TransferDao {
     @Override
     public boolean updateTransferStatus(int id, String status, String sender) {
         if (status.equals("approved")) {
+            System.out.println("here");
             if (!makeTransfer(id, sender));
             status = "pending";
         }
+        System.out.println("there");
         User user = jdbcUserDao.findByUsername(sender);
         //TODO verify sql statement
         String sql = "UPDATE transfer SET transfer_status = ? WHERE transfer_id = ? AND sender = ?";
@@ -96,6 +98,27 @@ public class JdbcTransferDao implements TransferDao {
         }
         return true;
     }
+
+    @Override
+    public List<Transfer> findAllPendingTransfers(String username) {
+//        User user = jdbcUserDao.findByUsername(username);
+//        List<Transfer> transfers = new ArrayList<>();
+//
+//        String sql = "SELECT sender, receiver, amount, transfer_status, transfer_id FROM transfer WHERE (sender = ? OR receiver = ?) AND transfer_status = pending";
+//        //TODO verify try catch
+//        try {
+//            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, user.getId(), user.getId());
+//            while (results.next()) {
+//                transfers.add(mapRowToTransfer(results));
+//            }
+//        } catch (DataAccessException e) {
+//            System.out.println("Access exception caught : " + e.getMessage());
+//            return null;
+//        }
+//        return transfers;
+        return null;
+    }
+
     private boolean makeTransfer (int id, String sender) {
         // TODO verify if purchase can be made, if so update account balances
        Transfer transfer = getTransferById(id, sender);
