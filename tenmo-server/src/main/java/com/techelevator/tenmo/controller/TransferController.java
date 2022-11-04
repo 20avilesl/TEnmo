@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-
+// TODO should we add path {users}
+// TODO can we configure the requestparam to not need user
 @RequestMapping("/transfers/")
 @RestController
 public class TransferController {
@@ -20,28 +21,39 @@ public class TransferController {
     public TransferController(TransferDao transferDao) {
         this.transferDao = transferDao;
     }
-    @ApiOperation("update the transfer status.")
-    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
-    public boolean updateTransferStatus(@ApiParam("enter transfer id") @PathVariable int id, @ApiParam("enter status") @RequestBody String status){
 
-        return transferDao.updateTransferStatus(id, status);
-    }
-
-    @ApiOperation("Create transfer")
+    @ApiOperation("Create Transfer")
+    @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public void createTransfer(@ApiParam("enter sender id") @RequestBody Transfer transfer){
-
-        if(!transferDao.createTransfer(transfer)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Create Transfer failed.");
+    public void createTransfer(@ApiParam("enter the sender")@RequestParam String sender, @ApiParam("enter the receiver")@RequestParam String receiver, @ApiParam("enter the amount")@RequestParam String amount){
+        if(!transferDao.createTransfer(sender, receiver, amount)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Create Transfer Failed");
         }
     }
-    //TODO only allow authenticated users to see their own transfers.
-
-    @ApiOperation("Get all Transfers")
+    //Transfer getTransferById(int id, String username);
+    @ApiOperation("Get Transfer By ID")
+    @RequestMapping(value="{id}", method = RequestMethod.POST)
+    public Transfer getTransferById(@ApiParam("enter the transfer id") @PathVariable int id, @ApiParam ("enter the username") @RequestParam String username) {
+        Transfer transfer = transferDao.getTransferById(id, username);
+        if (transfer == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Transfer Not Found");
+        }
+        return transfer;
+    }
+    @ApiOperation("Get All Transfers")
     @RequestMapping(value = "", method = RequestMethod.GET)
     public List<Transfer> getAllTransfers(@ApiParam("enter username")@RequestParam String username){
         return transferDao.findAllTransfers(username);
     }
+    @ApiOperation("Update Transfer Status")
+    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
+    public void updateTransferStatus(@ApiParam("enter transfer id") @PathVariable int id, @ApiParam("enter new status") @RequestParam String status, @ApiParam("enter the sender") @RequestParam String sender){
+        if (!transferDao.updateTransferStatus(id, status, sender)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad Update For Transfer");
+        }
+    }
 
 }
-
+// pending - new transfer
+// approved - receiver accepts could be false if transfer cannot be made
+// rejected  - receiver rejects always true

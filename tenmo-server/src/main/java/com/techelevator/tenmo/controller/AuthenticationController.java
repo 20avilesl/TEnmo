@@ -38,9 +38,9 @@ public class AuthenticationController {
         this.userDao = userDao;
     }
 
-    @ApiOperation("login")
+    @ApiOperation("Login")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public LoginResponse login(@ApiParam("login") @Valid @RequestBody LoginDTO loginDto) {
+    public LoginResponse login(@ApiParam("enter login information") @Valid @RequestBody LoginDTO loginDto) {
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
@@ -53,10 +53,10 @@ public class AuthenticationController {
 
         return new LoginResponse(jwt, user);
     }
-    @ApiOperation("register")
+    @ApiOperation("Register")
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public void register(@ApiParam("register")@Valid @RequestBody RegisterUserDTO newUser) {
+    public void register(@ApiParam("enter register data")@Valid @RequestBody RegisterUserDTO newUser) {
         if (!userDao.create(newUser.getUsername(), newUser.getPassword())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User registration failed.");
         }

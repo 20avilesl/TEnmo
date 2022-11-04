@@ -7,48 +7,47 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class JdbcTransferDao implements TransferDao {
     private final JdbcTemplate jdbcTemplate;
-    private final JdbcUserDao jdbcUserDao;
+    private JdbcUserDao jdbcUserDao;
+    private JdbcAccountDao jdbcAccountDao;
 
-    public JdbcTransferDao(JdbcTemplate jdbcTemplate, JdbcUserDao jdbcUserDao) {
+    public JdbcTransferDao(JdbcTemplate jdbcTemplate, JdbcUserDao jdbcUserDao, JdbcAccountDao jdbcAccountDao) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcUserDao = jdbcUserDao;
+        this.jdbcAccountDao = jdbcAccountDao;
     }
 
     @Override
-    public boolean createTransfer(Transfer transfer) {
-        String sql = "INSERT INTO transfer (sender, receiver, amount, transfer_status, transfer_id) VALUES (?, ?, ?, ?, ?)";
+    public boolean createTransfer(String sender, String receiver, String amount) {
+        User senderAsUser = jdbcUserDao.findByUsername(sender);
+        User receiverAsUser = jdbcUserDao.findByUsername(receiver);
+        if (senderAsUser.equals(receiverAsUser)) {
+            return false;
+        }
+        //TODO add try catch for big decimal and positive
+        BigDecimal amountAsBigDecimal = new BigDecimal(amount);
 
-        //TODO change date
-        //TODO review this try catch
+        String sql = "INSERT INTO transfer (sender, receiver, amount, transfer_status) VALUES (?, ?, ?, ?)";
 
         try {
-            jdbcTemplate.update(sql, transfer.getSender(), transfer.getReceiver(), transfer.getAmount(), transfer.getStatus(), transfer.getId());
+            jdbcTemplate.update(sql, senderAsUser.getId(), receiverAsUser.getId(), amountAsBigDecimal, "pending");
             return true;
         } catch (DataAccessException exception) {
-
-            System.out.println("Caught an exception : " + exception.getMessage());
             return false;
         }
     }
 
     @Override
-    public boolean updateTransferStatus(int id, String status) {
-        String sql = "UPDATE transfer SET transfer_status = ? WHERE transfer_id = ?";
-        jdbcTemplate.update(sql, status, id);
-        return true;
-    }
-
-    @Override
-    public Transfer getTransferById(int id, User user) {
-
+    public Transfer getTransferById(int id, String username) {
+        User user = jdbcUserDao.findByUsername(username);
         //TODO make sure this select statement works.
-        String sql = "SELECT sender, receiver, amount, transfer_status FROM transfer WHERE transfer_id = ? AND sender = ? OR receiver = ?";
+        String sql = "SELECT sender, receiver, amount, transfer_status, transfer_id FROM transfer WHERE transfer_id = ? AND (sender = ? OR receiver = ?)";
 
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id, user.getId(), user.getId());
@@ -57,7 +56,6 @@ public class JdbcTransferDao implements TransferDao {
             }
         } catch (DataAccessException e) {
             System.out.println("Access exception caught : " + e.getMessage());
-
         }
         return null;
     }
@@ -65,18 +63,53 @@ public class JdbcTransferDao implements TransferDao {
     @Override
     public List<Transfer> findAllTransfers(String username) {
         User user = jdbcUserDao.findByUsername(username);
-        String sql = "SELECT sender, receiver, amount, transfer_status, transfer_id FROM transfer WHERE sender = ? OR receiver = ?";
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, user.getId(), user.getId());
-
         List<Transfer> transfers = new ArrayList<>();
 
-        while (results.next()) {
+        String sql = "SELECT sender, receiver, amount, transfer_status, transfer_id FROM transfer WHERE sender = ? OR receiver = ?";
 
-            transfers.add(mapRowToTransfer(results));
-        }
 
-        // TODO do we need to pass in a user?
+        //TODO verify try catch
+       try {
+           SqlRowSet results = jdbcTemplate.queryForRowSet(sql, user.getId(), user.getId());
+           while (results.next()) {
+               transfers.add(mapRowToTransfer(results));
+           }
+       } catch (DataAccessException e) {
+           System.out.println("Access exception caught : " + e.getMessage());
+           return null;
+       }
         return transfers;
+    }
+    @Override
+    public boolean updateTransferStatus(int id, String status, String sender) {
+        if (status.equals("approved")) {
+            if (!makeTransfer(id, sender));
+            status = "pending";
+        }
+        User user = jdbcUserDao.findByUsername(sender);
+        //TODO verify sql statement
+        String sql = "UPDATE transfer SET transfer_status = ? WHERE transfer_id = ? AND sender = ?";
+        try {
+            jdbcTemplate.update(sql, status, id, user.getId());
+        } catch (DataAccessException exception) {
+            return false;
+        }
+        return true;
+    }
+    private boolean makeTransfer (int id, String sender) {
+        // TODO verify if purchase can be made, if so update account balances
+       Transfer transfer = getTransferById(id, sender);
+        // if sender does not have enough money return false
+        String sql = "SELECT balance FROM account WHERE user_id = ?";
+        //TODO should we add try catch here
+        BigDecimal balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, transfer.getSender()); // holds sender's balance
+        if (balance.subtract(transfer.getAmount()).compareTo(BigDecimal.ZERO) >= 0) {
+            // sender updates balance with negative balance amount
+            jdbcAccountDao.updateBalance(transfer.getSender(), transfer.getAmount().multiply(new BigDecimal("-1")));
+            jdbcAccountDao.updateBalance(transfer.getReceiver(), transfer.getAmount());
+            return true;
+        }
+        return false;
     }
 
     private Transfer mapRowToTransfer(SqlRowSet rs) {

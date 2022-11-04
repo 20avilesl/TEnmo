@@ -9,8 +9,11 @@ import java.util.List;
 
 public interface TransferDao {
 
-    boolean createTransfer(Transfer transfer);
-    boolean updateTransferStatus(int id, String status);
-    Transfer getTransferById(int id, User user);
+    boolean createTransfer(String sender, String receiver, String amount);
+    Transfer getTransferById(int id, String username);
     List<Transfer> findAllTransfers(String username);
+    boolean updateTransferStatus(int id, String status, String sender);
+
 }
+// you pay (sender of money) someone money
+// you request someone to pay money (receiver of money) person is the sender

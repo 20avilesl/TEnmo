@@ -17,11 +17,9 @@ public class AccountController {
     public AccountController (AccountDao accountDao) {
         this.accountDao = accountDao;
     }
-
-    @ApiOperation("getAccount")
-    @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public Account listUsers(@ApiParam("Enter the id") @RequestParam Long id) {
-        return accountDao.getAccount(id);
-    }
-
 }
+//    @ApiOperation("getAccount")
+//    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+//    public Account listUsers(@ApiParam("Enter the id") @RequestParam Long id) {
+//        return accountDao.getAccount(id);
+//    }

@@ -43,6 +43,7 @@ public class JdbcUserDao implements UserDao {
             users.add(user);
         }
         return users;
+        //TODO why no try catch?
     }
 
     @Override

@@ -19,20 +19,21 @@ public class UserController {
     public UserController(UserDao userDao) {
         this.userDao = userDao;
     }
-    @ApiOperation("lists all users")
+    @ApiOperation("Get all Users")
     @RequestMapping(value = "", method = RequestMethod.GET)
     public List<User> listUsers() {
         return userDao.findAll();
     }
-    @ApiOperation("find user")
+
+    @ApiOperation("Get User")
     @RequestMapping(value = "{username}", method = RequestMethod.GET)
-    public User findUser(@ApiParam("find user by username") @RequestParam String username) {
+    public User findUser(@ApiParam("enter the username") @RequestParam String username) {
         return userDao.findByUsername(username);
     }
+}
+
 //    @ApiOperation("find Id by username")
 //    @RequestMapping(value = "accounts/{username}", method = RequestMethod.GET)
 //    public int findId(@ApiParam("find Id of user") @RequestParam String username) {
 //        return userDao.findIdByUsername(username);
 //    }
-
-}
