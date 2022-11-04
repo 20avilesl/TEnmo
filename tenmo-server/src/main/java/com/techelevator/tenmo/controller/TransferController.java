@@ -38,8 +38,8 @@ public class TransferController {
     //Transfer getTransferById(int id, String username);
     @ApiOperation("Get Transfer By ID")
     @RequestMapping(value="{id}", method = RequestMethod.GET)
-    public Transfer getTransferById(@ApiParam("enter the transfer id") @PathVariable int id, @ApiParam ("enter the username") @RequestParam String username) {
-        Transfer transfer = transferDao.getTransferById(id, username);
+    public Transfer getTransferById(@ApiParam("enter the transfer id") @PathVariable int id, Principal principal) {
+        Transfer transfer = transferDao.getTransferById(id, principal.getName());
         if (transfer == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Transfer Not Found");
         }
@@ -48,7 +48,7 @@ public class TransferController {
     @PreAuthorize("hasRole('USER')")
     @ApiOperation("Get All Transfers")
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public List<Transfer> getAllTransfers(@ApiParam("enter username")@RequestParam Principal principal){
+    public List<Transfer> getAllTransfers(Principal principal){
         return transferDao.findAllTransfers(principal.getName());
     }
 //    @ApiOperation("Get All Pending Transfers")
