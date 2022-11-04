@@ -28,6 +28,7 @@ public class JdbcAccountDao implements AccountDao{
 //    }
 
     @Override
+    //TODO may need to refactor to update.
     public void updateBalance(int userId, BigDecimal amount) {
         String sql = "SELECT balance FROM account WHERE user_id = ?";
         //TODO should we have try catch here
