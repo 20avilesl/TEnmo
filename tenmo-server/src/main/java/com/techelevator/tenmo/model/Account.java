@@ -11,7 +11,7 @@ public class Account {
 
     }
 
-    public Account(BigDecimal balance, int accountId, int userId) {
+    public Account(BigDecimal balance, int userId) {
         this.balance = balance;
         this.accountId = accountId;
         this.userId = userId;

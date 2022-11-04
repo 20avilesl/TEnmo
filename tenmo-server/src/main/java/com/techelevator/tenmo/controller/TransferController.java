@@ -26,7 +26,7 @@ public class TransferController {
         this.transferDao = transferDao;
     }
 
-   // @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER')")
     @ApiOperation("Create Transfer")
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "", method = RequestMethod.POST)
@@ -35,7 +35,7 @@ public class TransferController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Create Transfer Failed");
         }
     }
-    //Transfer getTransferById(int id, String username);
+    @PreAuthorize("hasRole('USER')")
     @ApiOperation("Get Transfer By ID")
     @RequestMapping(value="{id}", method = RequestMethod.GET)
     public Transfer getTransferById(@ApiParam("enter the transfer id") @PathVariable int id, Principal principal) {
@@ -57,10 +57,11 @@ public class TransferController {
 //        return transferDao.findAllPendingTransfers(username);
 //        List<Transfer> pendingTransfers
 //    }
+    @PreAuthorize("hasRole('USER')")
     @ApiOperation("Update Transfer Status")
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
-    public void updateTransferStatus(@ApiParam("enter transfer id") @PathVariable int id, @ApiParam("enter new status") @RequestParam String status, @ApiParam("enter the sender") @RequestParam String sender){
-        if (!transferDao.updateTransferStatus(id, status, sender)) {
+    public void updateTransferStatus(@ApiParam("enter transfer id") @PathVariable int id, @ApiParam("enter new status") @RequestParam String status, Principal principal){
+        if (!transferDao.updateTransferStatus(id, status, principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad Update For Transfer");
         }
     }

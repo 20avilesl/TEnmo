@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.dao;
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import org.springframework.dao.DataAccessException;
@@ -80,31 +81,59 @@ public class JdbcTransferDao implements TransferDao {
        }
         return transfers;
     }
-//    public boolean finalizeTransfer() {
-//        verifyTransfer(); // check if true or false
-//        // if false exit
-//
-//
-//    }
-
-    @Override
-    public boolean updateTransferStatus(int id, String status, String sender) {
-        if (status.equals("approved")) {
-            System.out.println("here");
-            if (!makeTransfer(id, sender));
-            status = "pending";
+    public boolean finalizeTransfer(int id, String status, String sender) {
+        if (!isValidStatus(status)) {
+            return false;
         }
-        System.out.println("there");
-        User user = jdbcUserDao.findByUsername(sender);
-        //TODO verify sql statement
+        Transfer transfer = getTransferById(id, sender);
+        if (status.equals("rejected")) {
+            return updateStatus(id, status, transfer.getSender());
+        }
+        BigDecimal newSenderBalance = jdbcAccountDao.getBalance(sender);
+        if (!hasEnoughMoney(transfer.getAmount(), newSenderBalance)) {
+            return false;
+        }
+        // prepare accounts
+        Account senderAccount = new Account(newSenderBalance,  )
+
+    }
+    private boolean hasEnoughMoney(BigDecimal transferAmount, BigDecimal balance) {
+        return balance.subtract(transferAmount).compareTo(BigDecimal.ZERO) >= 0;
+    }
+    private boolean updateStatus (int transferId, String newStatus, int userId) {
         String sql = "UPDATE transfer SET transfer_status = ? WHERE transfer_id = ? AND sender = ?";
         try {
-            jdbcTemplate.update(sql, status, id, user.getId());
+            jdbcTemplate.update(sql, newStatus, transferId, userId);
         } catch (DataAccessException exception) {
             return false;
         }
         return true;
     }
+    private boolean isValidStatus(String status) {
+        if (status.equals("approved") || status.equals("rejected")) {
+            return true;
+        }
+        return false;
+    }
+//
+//    @Override
+//    public boolean updateTransferStatus(int id, String status, String sender) {
+//        if (status.equals("approved")) {
+//            System.out.println("here");
+//            if (!makeTransfer(id, sender));
+//            status = "pending";
+//        }
+//        System.out.println("there");
+//        User user = jdbcUserDao.findByUsername(sender);
+//        //TODO verify sql statement
+//        String sql = "UPDATE transfer SET transfer_status = ? WHERE transfer_id = ? AND sender = ?";
+//        try {
+//            jdbcTemplate.update(sql, status, id, user.getId());
+//        } catch (DataAccessException exception) {
+//            return false;
+//        }
+//        return true;
+//    }
 
 //    @Override
 //    public List<Transfer> findAllPendingTransfers(String username) {
@@ -127,21 +156,21 @@ public class JdbcTransferDao implements TransferDao {
 //        return transfers;
 //    }
 
-    private boolean makeTransfer (int id, String sender) {
-        // TODO verify if purchase can be made, if so update account balances
-       Transfer transfer = getTransferById(id, sender);
-        // if sender does not have enough money return false
-        String sql = "SELECT balance FROM account WHERE user_id = ?";
-        //TODO should we add try catch here
-        BigDecimal balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, transfer.getSender()); // holds sender's balance
-        if (balance.subtract(transfer.getAmount()).compareTo(BigDecimal.ZERO) >= 0) {
-            // sender updates balance with negative balance amount
-            jdbcAccountDao.updateBalance(transfer.getSender(), transfer.getAmount().multiply(new BigDecimal("-1")));
-            jdbcAccountDao.updateBalance(transfer.getReceiver(), transfer.getAmount());
-            return true;
-        }
-        return false;
-    }
+//    private boolean makeTransfer (int id, String sender) {
+//        // TODO verify if purchase can be made, if so update account balances
+//       Transfer transfer = getTransferById(id, sender);
+//        // if sender does not have enough money return false
+//        String sql = "SELECT balance FROM account WHERE user_id = ?";
+//        //TODO should we add try catch here
+//        BigDecimal balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, transfer.getSender()); // holds sender's balance
+//        if (balance.subtract(transfer.getAmount()).compareTo(BigDecimal.ZERO) >= 0) {
+//            // sender updates balance with negative balance amount
+//            jdbcAccountDao.updateBalance(transfer.getSender(), transfer.getAmount().multiply(new BigDecimal("-1")));
+//            jdbcAccountDao.updateBalance(transfer.getReceiver(), transfer.getAmount());
+//            return true;
+//        }
+//        return false;
+//    }
 
     private Transfer mapRowToTransfer(SqlRowSet rs) {
         Transfer transfer = new Transfer();

@@ -27,27 +27,27 @@ public class JdbcAccountDao implements AccountDao{
 //        throw new UsernameNotFoundException("User ID not found.");
 //    }
 
-    @Override
-    //TODO may need to refactor to update.
-    public void updateBalance(int userId, BigDecimal amount) {
-        String sql = "SELECT balance FROM account WHERE user_id = ?";
-        //TODO should we have try catch here
-        BigDecimal balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, userId);
-        balance = balance.add(amount);
-        sql = "UPDATE account SET balance = ? WHERE user_id = ?";
-        jdbcTemplate.update(sql, balance, userId);
-    }
-    // -> 1000 -> 980
 //    @Override
-//    public void updateBalance(Account account) {
-//        String sql = "UPDATE account SET BALANCE = ? WHERE account_id = ?";
-//        jdbcTemplate.update(sql, account.getBalance(), account.getAccountId());
+//    //TODO may need to refactor to update.
+//    public void updateBalance(int userId, BigDecimal amount) {
+//        String sql = "SELECT balance FROM account WHERE user_id = ?";
+//        //TODO should we have try catch here
+//        BigDecimal balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, userId);
+//        balance = balance.add(amount);
+//        sql = "UPDATE account SET balance = ? WHERE user_id = ?";
+//        jdbcTemplate.update(sql, balance, userId);
 //    }
+    // -> 1000 -> 980
+    @Override
+    public void updateBalance(Account account) {
+        String sql = "UPDATE account SET BALANCE = ? WHERE account_id = ?";
+        jdbcTemplate.update(sql, account.getBalance(), account.getAccountId());
+    }
  //   }
     @Override
-    public int getBalance(String username) {
+    public BigDecimal getBalance(String username) {
         String sql = "SELECT balance FROM account as a JOIN tenmo_user as u ON u.user_id = a.user_id WHERE u.username = ?";
-        return jdbcTemplate.queryForObject(sql, Integer.class, username);
+        return jdbcTemplate.queryForObject(sql, BigDecimal.class, username);
     }
 
 

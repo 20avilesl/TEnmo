@@ -6,10 +6,11 @@ import com.techelevator.tenmo.model.User;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@PreAuthorize("isAuthenticated()")
 @RequestMapping("/users/")
 @RestController
 public class UserController {
@@ -19,12 +20,15 @@ public class UserController {
     public UserController(UserDao userDao) {
         this.userDao = userDao;
     }
+
+    @PreAuthorize("hasRole('USER')")
     @ApiOperation("Get all Users")
     @RequestMapping(value = "", method = RequestMethod.GET)
     public List<User> listUsers() {
         return userDao.findAll();
     }
 
+    @PreAuthorize("hasRole('USER')")
     @ApiOperation("Get User")
     @RequestMapping(value = "{username}", method = RequestMethod.GET)
     public User findUser(@ApiParam("enter the username") @RequestParam String username) {
