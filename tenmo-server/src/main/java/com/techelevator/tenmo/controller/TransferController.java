@@ -40,16 +40,17 @@ public class TransferController {
         }
         return transfer;
     }
-//    @ApiOperation("Get All Transfers")
-//    @RequestMapping(value = "", method = RequestMethod.GET)
-//    public List<Transfer> getAllTransfers(@ApiParam("enter username")@RequestParam String username){
-//        return transferDao.findAllTransfers(username);
-//    }
-    @ApiOperation("Get All Pending Transfers")
+    @ApiOperation("Get All Transfers")
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public List<Transfer> getAllPendingTransfers(@ApiParam("enter username")@RequestParam String username){
-        return transferDao.findAllPendingTransfers(username);
+    public List<Transfer> getAllTransfers(@ApiParam("enter username")@RequestParam String username){
+        return transferDao.findAllTransfers(username);
     }
+//    @ApiOperation("Get All Pending Transfers")
+//    @RequestMapping(value = "", method = RequestMethod.GET)
+//    public List<Transfer> getAllPendingTransfers(@ApiParam("enter username")@RequestParam String username){
+//        return transferDao.findAllPendingTransfers(username);
+//        List<Transfer> pendingTransfers
+//    }
     @ApiOperation("Update Transfer Status")
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public void updateTransferStatus(@ApiParam("enter transfer id") @PathVariable int id, @ApiParam("enter new status") @RequestParam String status, @ApiParam("enter the sender") @RequestParam String sender){

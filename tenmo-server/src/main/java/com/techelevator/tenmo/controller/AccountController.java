@@ -18,7 +18,7 @@ public class AccountController {
         this.accountDao = accountDao;
     }
     @ApiParam("Get Balance")
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.GET)
     public int getBalance(@ApiParam("enter the username") @RequestParam String username) {
         return accountDao.getBalance(username);
     }

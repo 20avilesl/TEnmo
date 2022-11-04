@@ -99,12 +99,14 @@ public class JdbcTransferDao implements TransferDao {
         return true;
     }
 
-    @Override
-    public List<Transfer> findAllPendingTransfers(String username) {
+//    @Override
+//    public List<Transfer> findAllPendingTransfers(String username) {
 //        User user = jdbcUserDao.findByUsername(username);
 //        List<Transfer> transfers = new ArrayList<>();
 //
 //        String sql = "SELECT sender, receiver, amount, transfer_status, transfer_id FROM transfer WHERE (sender = ? OR receiver = ?) AND transfer_status = pending";
+//
+//
 //        //TODO verify try catch
 //        try {
 //            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, user.getId(), user.getId());
@@ -116,8 +118,7 @@ public class JdbcTransferDao implements TransferDao {
 //            return null;
 //        }
 //        return transfers;
-        return null;
-    }
+//    }
 
     private boolean makeTransfer (int id, String sender) {
         // TODO verify if purchase can be made, if so update account balances
