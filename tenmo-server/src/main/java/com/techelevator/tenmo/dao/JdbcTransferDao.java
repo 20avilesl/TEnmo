@@ -80,6 +80,13 @@ public class JdbcTransferDao implements TransferDao {
        }
         return transfers;
     }
+//    public boolean finalizeTransfer() {
+//        verifyTransfer(); // check if true or false
+//        // if false exit
+//
+//
+//    }
+
     @Override
     public boolean updateTransferStatus(int id, String status, String sender) {
         if (status.equals("approved")) {

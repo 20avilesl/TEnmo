@@ -36,7 +36,13 @@ public class JdbcAccountDao implements AccountDao{
         sql = "UPDATE account SET balance = ? WHERE user_id = ?";
         jdbcTemplate.update(sql, balance, userId);
     }
-
+    // -> 1000 -> 980
+//    @Override
+//    public void updateBalance(Account account) {
+//        String sql = "UPDATE account SET BALANCE = ? WHERE account_id = ?";
+//        jdbcTemplate.update(sql, account.getBalance(), account.getAccountId());
+//    }
+ //   }
     @Override
     public int getBalance(String username) {
         String sql = "SELECT balance FROM account as a JOIN tenmo_user as u ON u.user_id = a.user_id WHERE u.username = ?";
