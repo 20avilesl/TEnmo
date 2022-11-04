@@ -6,22 +6,27 @@ import com.techelevator.tenmo.model.User;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.util.List;
 // TODO should we add path {users}
 // TODO can we configure the requestparam to not need user
 @RequestMapping("/transfers/")
 @RestController
+@PreAuthorize("isAuthenticated()")
 public class TransferController {
 
     private TransferDao transferDao;
+
 
     public TransferController(TransferDao transferDao) {
         this.transferDao = transferDao;
     }
 
+   // @PreAuthorize("hasRole('USER')")
     @ApiOperation("Create Transfer")
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "", method = RequestMethod.POST)
@@ -40,10 +45,11 @@ public class TransferController {
         }
         return transfer;
     }
+    @PreAuthorize("hasRole('USER')")
     @ApiOperation("Get All Transfers")
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public List<Transfer> getAllTransfers(@ApiParam("enter username")@RequestParam String username){
-        return transferDao.findAllTransfers(username);
+    public List<Transfer> getAllTransfers(@ApiParam("enter username")@RequestParam Principal principal){
+        return transferDao.findAllTransfers(principal.getName());
     }
 //    @ApiOperation("Get All Pending Transfers")
 //    @RequestMapping(value = "", method = RequestMethod.GET)
