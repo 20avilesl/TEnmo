@@ -8,13 +8,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface TransferDao {
-
-    boolean createTransfer(String sender, String receiver, String amount);
+    void createTransfer(String sender, String receiver, String amount, String username);
     Transfer getTransferById(int id, String username);
     List<Transfer> findAllTransfers(String username);
-    boolean updateTransferStatus(int id, String status, String sender);
-    //List<Transfer> findAllPendingTransfers (String username);
-
+    void finalizeTransfer(int id, String status, String sender);
 }
-// you pay (sender of money) someone money
-// you request someone to pay money (receiver of money) person is the sender

@@ -41,4 +41,13 @@ public class Account {
     public long getUserId() {
         return userId;
     }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "balance=" + balance +
+                ", accountId=" + accountId +
+                ", userId=" + userId +
+                '}';
+    }
 }

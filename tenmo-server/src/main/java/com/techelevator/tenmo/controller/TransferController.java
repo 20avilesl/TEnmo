@@ -30,10 +30,8 @@ public class TransferController {
     @ApiOperation("Create Transfer")
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public void createTransfer(@ApiParam("enter the sender")@RequestParam String sender, @ApiParam("enter the receiver")@RequestParam String receiver, @ApiParam("enter the amount")@RequestParam String amount){
-        if(!transferDao.createTransfer(sender, receiver, amount)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Create Transfer Failed");
-        }
+    public void createTransfer(@ApiParam("enter the sender")@RequestParam String sender, @ApiParam("enter the receiver")@RequestParam String receiver, @ApiParam("enter the amount")@RequestParam String amount,Principal principal){
+        transferDao.createTransfer(sender, receiver, amount, principal.getName());
     }
     @PreAuthorize("hasRole('USER')")
     @ApiOperation("Get Transfer By ID")
@@ -60,10 +58,8 @@ public class TransferController {
     @PreAuthorize("hasRole('USER')")
     @ApiOperation("Update Transfer Status")
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
-    public void updateTransferStatus(@ApiParam("enter transfer id") @PathVariable int id, @ApiParam("enter new status") @RequestParam String status, Principal principal){
-        if (!transferDao.updateTransferStatus(id, status, principal.getName())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad Update For Transfer");
-        }
+    public void finalizeTransfer(@ApiParam("enter transfer id") @PathVariable int id, @ApiParam("enter new status") @RequestParam String status, Principal principal){
+        transferDao.finalizeTransfer(id, status, principal.getName());
     }
 
 }
