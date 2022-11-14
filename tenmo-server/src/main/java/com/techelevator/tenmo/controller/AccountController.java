@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigDecimal;
 import java.security.Principal;
 @PreAuthorize("isAuthenticated()")
-@RequestMapping("/accounts/")
+@RequestMapping("api/accounts")
 @RestController
 public class AccountController {
     private AccountDao accountDao;
@@ -21,16 +21,10 @@ public class AccountController {
     public AccountController (AccountDao accountDao) {
         this.accountDao = accountDao;
     }
-    @PreAuthorize("hasRole('USER')")
+    //@PreAuthorize("hasRole('USER')")
     @ApiParam("Get Balance")
     @RequestMapping(value = "", method = RequestMethod.GET)
     public BigDecimal getBalance(Principal principal) {
         return accountDao.getBalance(principal.getName());
     }
-//    @ApiOperation("getAccount")
-//    @RequestMapping(value = "{id}", method = RequestMethod.GET)
-//    public Account listUsers(@ApiParam("Enter the id") @RequestParam Long id) {
-//        return accountDao.getAccount(id);
-//    }
-
 }

@@ -14,7 +14,7 @@ import java.security.Principal;
 import java.util.List;
 // TODO should we add path {users}
 // TODO can we configure the requestparam to not need user
-@RequestMapping("/transfers/")
+@RequestMapping("/api/transfers/")
 @RestController
 @PreAuthorize("isAuthenticated()")
 public class TransferController {
@@ -61,6 +61,7 @@ public class TransferController {
     public void finalizeTransfer(@ApiParam("enter transfer id") @PathVariable int id, @ApiParam("enter new status") @RequestParam String status, Principal principal){
         transferDao.finalizeTransfer(id, status, principal.getName());
     }
+
 
 }
 // pending - new transfer

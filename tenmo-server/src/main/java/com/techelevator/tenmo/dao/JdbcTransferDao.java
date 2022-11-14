@@ -29,14 +29,19 @@ public class JdbcTransferDao implements TransferDao {
 
     @Override
     public void createTransfer(String sender, String receiver, String amount, String username) {
-        // verify that users exist when creating user objects through user dao
+        // make sure sender or receiver is the logged user
+        if (!(sender.equals(username) || receiver.equals(username))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You Are Not Authorized To Preform This Action");
+        }
+        // verify sender is not receiver
+        if (sender.equals(receiver)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You Cannot Make A Transfer With Yourself");
+        }
+
+        // verify that users exists when creating user objects through user dao
         User senderAsUser = userDao.findByUsername(sender);
         User receiverAsUser = userDao.findByUsername(receiver);
 
-        // verify sender is not receiver
-        if (senderAsUser.equals(receiverAsUser)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You Cannot Make A Transfer With Yourself");
-        }
         //  verify transfer amount
         BigDecimal amountAsBigDecimal = convertToBigDecimal(amount);
         if (amountAsBigDecimal == null || amountAsBigDecimal.compareTo(BigDecimal.ZERO) <= 0) {
@@ -55,13 +60,10 @@ public class JdbcTransferDao implements TransferDao {
     @Override
     public Transfer getTransferById(int id, String username) {
         User user = userDao.findByUsername(username);
-        //TODO make sure this select statement works.
         String sql = "SELECT sender, receiver, amount, transfer_status, transfer_id FROM transfer WHERE transfer_id = ? AND (sender = ? OR receiver = ?)";
-
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id, user.getId(), user.getId());
             if (results.next()) {
-
                 return mapRowToTransfer(results);
             }
         } catch (DataAccessException e) {
