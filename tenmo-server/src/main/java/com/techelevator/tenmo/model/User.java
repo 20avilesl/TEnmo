@@ -52,7 +52,7 @@ public class User {
    public void setActivated(boolean activated) {
       this.activated = activated;
    }
-
+   
    public Set<Authority> getAuthorities() {
       return authorities;
    }

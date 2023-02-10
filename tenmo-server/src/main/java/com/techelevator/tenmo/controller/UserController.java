@@ -27,11 +27,11 @@ public class UserController {
     public List<User> listUsers() {
         return userDao.findAll();
     }
-
-    @PreAuthorize("hasRole('USER')")
+@
+    PreAuthorize("hasRole('USER')")
     @ApiOperation("Get User")
     @RequestMapping(value = "{username}", method = RequestMethod.GET)
-    public User findUser(@ApiParam("enter the username") @RequestParam String username) {
+    public User findUser(@RequestParam String username) {
         return userDao.findByUsername(username);
     }
 }
